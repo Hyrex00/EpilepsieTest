@@ -2,94 +2,51 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Ritim Kutusu</title>
+<title>Frekanslı Siyah Beyaz</title>
 <style>
     html, body {
         margin: 0;
         width: 100%;
         height: 100%;
-        background: #111;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: system-ui, sans-serif;
-        color: white;
-        user-select: none;
-    }
-
-    #game {
-        width: 220px;
-        height: 220px;
         background: black;
-        border-radius: 16px;
-        transition: box-shadow 0.1s;
-    }
-
-    #ui {
-        position: fixed;
-        bottom: 20px;
-        text-align: center;
-        font-size: 14px;
-        opacity: 0.8;
     }
 </style>
 </head>
 <body>
 
-<div id="game"></div>
-
-<div id="ui">
-    <div>Skor: <span id="score">0</span></div>
-    <div>Frekans: <span id="freq">2</span> Hz</div>
-    <div style="opacity:0.6">En parlak anda tıkla</div>
-</div>
-
 <script>
-const box = document.getElementById("game");
-const scoreEl = document.getElementById("score");
-const freqEl = document.getElementById("freq");
+const frequencies = [
+  1,2,4,8,12,15,20,
+  ...Array(90).fill(25)
+];
 
-let score = 0;
-let freq = 2;              // Hz
-let startTime = performance.now();
+let freqIndex = 0;
+let freq = frequencies[freqIndex];
 
-function loop() {
+const startTime = performance.now();
+let freqStartTime = startTime;
+
+function update() {
     const now = performance.now();
     const t = (now - startTime) / 1000;
 
-    // sinüs dalgası (0–1 arası normalize)
-    const wave = (Math.sin(2 * Math.PI * freq * t) + 1) / 2;
-
-    const brightness = Math.floor(wave * 255);
-    box.style.backgroundColor =
-        `rgb(${brightness},${brightness},${brightness})`;
-
-    // hafif glow
-    box.style.boxShadow =
-        `0 0 ${20 + wave * 40}px rgba(255,255,255,${wave * 0.6})`;
-
-    requestAnimationFrame(loop);
-}
-
-box.addEventListener("click", () => {
-    const now = performance.now();
-    const t = (now - startTime) / 1000;
-
-    const wave = Math.sin(2 * Math.PI * freq * t);
-
-    // tepe noktası toleransı
-    if (wave > 0.95) {
-        score++;
-        freq += 0.5;   // zorlaşma
-    } else {
-        score = Math.max(0, score - 1);
+    // --- frekans değişimi ---
+    if (now - freqStartTime >= 200) {
+        freqIndex = (freqIndex + 1) % frequencies.length;
+        freq = frequencies[freqIndex];
+        freqStartTime = now;
+        console.log("Frekans →", freq, "Hz");
     }
 
-    scoreEl.textContent = score;
-    freqEl.textContent = freq.toFixed(1);
-});
+    // --- sert siyah / beyaz ---
+    const wave = Math.sin(2 * Math.PI * freq * t);
+    document.body.style.backgroundColor =
+        wave > 0 ? "white" : "black";
 
-loop();
+    requestAnimationFrame(update);
+}
+
+update();
 </script>
 
 </body>
