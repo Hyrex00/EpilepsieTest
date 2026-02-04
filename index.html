@@ -2,51 +2,126 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Frekanslı Siyah Beyaz</title>
+<title>Ritim Küpü 3D</title>
 <style>
-    html, body {
-        margin: 0;
-        width: 100%;
-        height: 100%;
-        background: black;
-    }
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #111, #000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: system-ui, sans-serif;
+    color: white;
+    overflow: hidden;
+}
+
+#scene {
+    perspective: 800px;
+}
+
+#cube {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.face {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(145deg, #222, #555);
+    opacity: 0.95;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.front  { transform: translateZ(90px); }
+.back   { transform: rotateY(180deg) translateZ(90px); }
+.right  { transform: rotateY(90deg) translateZ(90px); }
+.left   { transform: rotateY(-90deg) translateZ(90px); }
+.top    { transform: rotateX(90deg) translateZ(90px); }
+.bottom { transform: rotateX(-90deg) translateZ(90px); }
+
+#ui {
+    position: fixed;
+    bottom: 20px;
+    text-align: center;
+    opacity: 0.8;
+    font-size: 14px;
+}
 </style>
 </head>
 <body>
 
+<div id="scene">
+    <div id="cube">
+        <div class="face front"></div>
+        <div class="face back"></div>
+        <div class="face right"></div>
+        <div class="face left"></div>
+        <div class="face top"></div>
+        <div class="face bottom"></div>
+    </div>
+</div>
+
+<div id="ui">
+    Skor: <span id="score">0</span> |
+    Frekans: <span id="freq">1.5</span> Hz
+</div>
+
 <script>
-const frequencies = [
-  1,2,4,8,12,15,20,
-  ...Array(30).fill(25)
-];
+const cube = document.getElementById("cube");
+const scoreEl = document.getElementById("score");
+const freqEl = document.getElementById("freq");
 
-let freqIndex = 0;
-let freq = frequencies[freqIndex];
+let score = 0;
+let freq = 1.5;
+let start = performance.now();
 
-const startTime = performance.now();
-let freqStartTime = startTime;
-
-function update() {
+function loop() {
     const now = performance.now();
-    const t = (now - startTime) / 1000;
+    const t = (now - start) / 1000;
 
-    // --- frekans değişimi ---
-    if (now - freqStartTime >= 200) {
-        freqIndex = (freqIndex + 1) % frequencies.length;
-        freq = frequencies[freqIndex];
-        freqStartTime = now;
-        console.log("Frekans →", freq, "Hz");
-    }
-
-    // --- sert siyah / beyaz ---
     const wave = Math.sin(2 * Math.PI * freq * t);
-    document.body.style.backgroundColor =
-        wave > 0 ? "white" : "black";
+    const norm = (wave + 1) / 2;
 
-    requestAnimationFrame(update);
+    const scale = 0.8 + norm * 0.4;
+    const glow = 20 + norm * 40;
+    const brightness = 150 + norm * 105;
+
+    cube.style.transform = `
+        rotateX(${t * 20}deg)
+        rotateY(${t * 35}deg)
+        scale(${scale})
+    `;
+
+    cube.style.filter = `
+        drop-shadow(0 0 ${glow}px rgba(255,255,255,${norm}))
+        brightness(${brightness}%)
+    `;
+
+    requestAnimationFrame(loop);
 }
 
-update();
+cube.addEventListener("click", () => {
+    const now = performance.now();
+    const t = (now - start) / 1000;
+    const wave = Math.sin(2 * Math.PI * freq * t);
+
+    if (wave > 0.92) {
+        score++;
+        freq += 0.2;
+    } else {
+        score = Math.max(0, score - 1);
+    }
+
+    scoreEl.textContent = score;
+    freqEl.textContent = freq.toFixed(2);
+});
+
+loop();
 </script>
 
 </body>
