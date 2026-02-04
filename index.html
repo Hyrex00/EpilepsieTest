@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Frekanslı Siyah Beyaz</title>
+<style>
+    html, body {
+        margin: 0;
+        width: 100%;
+        height: 100%;
+        background: black;
+    }
+</style>
+</head>
+<body>
+
+<script>
+const frequencies = [
+  1,2,4,8,12,15,20,
+  ...Array(90).fill(25)
+];
+
+let freqIndex = 0;
+let freq = frequencies[freqIndex];
+
+const startTime = performance.now();
+let freqStartTime = startTime;
+
+function update() {
+    const now = performance.now();
+    const t = (now - startTime) / 1000;
+
+    // --- frekans değişimi ---
+    if (now - freqStartTime >= 200) {
+        freqIndex = (freqIndex + 1) % frequencies.length;
+        freq = frequencies[freqIndex];
+        freqStartTime = now;
+        console.log("Frekans →", freq, "Hz");
+    }
+
+    // --- sert siyah / beyaz ---
+    const wave = Math.sin(2 * Math.PI * freq * t);
+    document.body.style.backgroundColor =
+        wave > 0 ? "white" : "black";
+
+    requestAnimationFrame(update);
+}
+
+update();
+</script>
+
+</body>
+</html>
