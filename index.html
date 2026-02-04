@@ -17,7 +17,7 @@
 <script>
 const frequencies = [
   1,2,4,8,12,15,20,
-  ...Array(90).fill(25)
+  ...Array(9).fill(25)
 ];
 
 let freqIndex = 0;
@@ -41,7 +41,7 @@ function update() {
     // --- sert siyah / beyaz ---
     const wave = Math.sin(2 * Math.PI * freq * t);
     document.body.style.backgroundColor =
-        wave > 0 ? "white" : "black";
+        wave > 0 ? "rgb(255,255,255)" : "black";
 
     requestAnimationFrame(update);
 }
