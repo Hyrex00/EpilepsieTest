@@ -23,7 +23,6 @@
 
   html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); color: var(--text); font-family: var(--sans); }
 
-  /* === STIMULUS CANVAS === */
   #stimulus {
     position: fixed; inset: 0;
     background: black;
@@ -32,7 +31,6 @@
   }
   #stimulus.active { display: block; }
 
-  /* === OVERLAY UI === */
   #ui {
     position: fixed; inset: 0;
     z-index: 10;
@@ -41,7 +39,6 @@
     pointer-events: none;
   }
 
-  /* TOP BAR */
   #topbar {
     display: flex; align-items: center; justify-content: space-between;
     padding: 12px 20px;
@@ -76,10 +73,8 @@
     transition: background 0.2s;
   }
   #status-dot.running { background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1s infinite; }
-  #status-dot.warning { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
   @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-  /* BOTTOM CONTROL PANEL */
   #panel {
     position: absolute;
     bottom: 0; left: 0; right: 0;
@@ -112,9 +107,7 @@
     margin-top: 8px;
   }
 
-  .ctrl-group {
-    display: flex; flex-direction: column; gap: 8px;
-  }
+  .ctrl-group { display: flex; flex-direction: column; gap: 8px; }
   .ctrl-label {
     font-family: var(--mono);
     font-size: 10px;
@@ -122,13 +115,8 @@
     color: var(--muted);
     text-transform: uppercase;
   }
-  .ctrl-value {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--accent);
-  }
+  .ctrl-value { font-family: var(--mono); font-size: 13px; color: var(--accent); }
 
-  /* Sliders */
   input[type=range] {
     -webkit-appearance: none;
     width: 100%; height: 3px;
@@ -146,7 +134,6 @@
   }
   input[type=range].danger::-webkit-slider-thumb { background: var(--danger); box-shadow: 0 0 6px var(--danger); }
 
-  /* Buttons */
   .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .btn {
     padding: 6px 14px;
@@ -163,7 +150,6 @@
   .btn.danger-btn { border-color: #331119; }
   .btn.danger-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
 
-  /* BIG START/STOP */
   #big-btn-row {
     display: flex; gap: 12px; align-items: center;
     margin-top: 14px;
@@ -192,36 +178,11 @@
   #sweep-btn:hover { border-color: var(--warn); color: var(--warn); }
   #sweep-btn.active { border-color: var(--warn); color: black; background: var(--warn); }
 
-  /* WARNING BANNER */
-  #warning-banner {
-    position: fixed; top: 54px; left: 0; right: 0;
-    background: #1a0a00;
-    border-bottom: 1px solid #ff6600;
-    padding: 10px 20px;
-    display: flex; align-items: center; gap: 12px;
-    z-index: 20;
-    font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
-    color: var(--warn);
-    pointer-events: all;
-  }
-  #warning-banner .warn-icon { font-size: 16px; }
-  #dismiss-warn { margin-left: auto; cursor: pointer; color: var(--muted); text-decoration: underline; }
-
-  /* FREQ SWEEP VIZ */
-  #sweep-viz {
-    width: 100%; height: 30px;
-    position: relative;
-    margin-top: 4px;
-  }
-  #sweep-viz canvas { width: 100%; height: 100%; }
-
-  /* TIMER */
   #timer-display {
     font-family: var(--mono); font-size: 20px; color: white;
     letter-spacing: 2px;
   }
 
-  /* PATTERN CANVAS */
   #patternCanvas {
     position: fixed; inset: 0;
     z-index: 1;
@@ -229,7 +190,6 @@
   }
   #patternCanvas.active { display: block; }
 
-  /* ESC hint */
   #esc-hint {
     position: fixed; top: 60px; right: 20px;
     font-family: var(--mono); font-size: 10px; letter-spacing: 2px;
@@ -241,21 +201,10 @@
 </head>
 <body>
 
-<!-- ESC hint -->
 <div id="esc-hint">ESC → STOP</div>
-
-<!-- Stimulus layers -->
 <div id="stimulus"></div>
 <canvas id="patternCanvas"></canvas>
 
-<!-- Warning Banner -->
-<div id="warning-banner">
-  <span class="warn-icon">⚠</span>
-  <span><strong>PHOTOSENSITIVITY WARNING</strong> — Flashing lights may trigger seizures in people with photosensitive epilepsy. Do not use above 3 Hz if you have or suspect epilepsy.</span>
-  <span id="dismiss-warn" onclick="this.parentElement.style.display='none'">dismiss</span>
-</div>
-
-<!-- UI Overlay -->
 <div id="ui">
   <div id="topbar">
     <div class="logo">FLICKER<span>/</span>TEST <span style="font-size:9px">v2</span></div>
@@ -271,7 +220,6 @@
 
     <div class="controls-grid">
 
-      <!-- Frequency -->
       <div class="ctrl-group" style="grid-column: span 2;">
         <div class="ctrl-label">Frequency <span class="ctrl-value" id="freq-val">1.0 Hz</span></div>
         <input type="range" id="freq-slider" min="0.5" max="50" step="0.5" value="1"
@@ -289,7 +237,6 @@
         </div>
       </div>
 
-      <!-- Pattern -->
       <div class="ctrl-group">
         <div class="ctrl-label">Pattern</div>
         <div class="btn-row" style="flex-direction:column; gap:4px;">
@@ -300,7 +247,6 @@
         </div>
       </div>
 
-      <!-- Colors + Duty -->
       <div class="ctrl-group">
         <div class="ctrl-label">Colors</div>
         <div class="btn-row" style="flex-direction:column; gap:4px;">
@@ -315,7 +261,6 @@
 
     </div>
 
-    <!-- Sweep row -->
     <div class="controls-grid" style="margin-top:12px; grid-template-columns: 1fr 1fr 1fr 1fr;">
       <div class="ctrl-group">
         <div class="ctrl-label">Sweep From <span class="ctrl-value" id="sweep-from-val">1 Hz</span></div>
@@ -346,7 +291,6 @@
 </div>
 
 <script>
-// === STATE ===
 let running = false;
 let sweeping = false;
 let currentFreq = 1;
@@ -358,16 +302,14 @@ let colorMode = 'bw';
 let sweepFrom = 1, sweepTo = 30, sweepDur = 10;
 let sessionStart = null;
 let timerInterval = null;
-
 let panelVisible = true;
 let frameId = null;
 let startTime = null;
-let lastFlipTime = 0;
-let flickerState = false; // true=on, false=off
+let flickerState = false;
 
-// Canvas
 const canvas = document.getElementById('patternCanvas');
 const ctx = canvas.getContext('2d');
+const stimulus = document.getElementById('stimulus');
 
 function resizeCanvas() {
   canvas.width = window.innerWidth;
@@ -376,7 +318,6 @@ function resizeCanvas() {
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
-// === CONTROLS ===
 function setFreq(v) {
   currentFreq = +v;
   document.getElementById('freq-slider').value = v;
@@ -402,8 +343,8 @@ function setColors(c) {
   ['bw','rb','gray'].forEach(id => {
     document.getElementById('col-' + id).classList.toggle('active', id === c);
   });
-  if (c === 'bw') { colors = { on: '#ffffff', off: '#000000' }; }
-  else if (c === 'rb') { colors = { on: '#ff1122', off: '#000000' }; }
+  if (c === 'bw')   { colors = { on: '#ffffff', off: '#000000' }; }
+  else if (c === 'rb')   { colors = { on: '#ff1122', off: '#000000' }; }
   else if (c === 'gray') { colors = { on: '#aaaaaa', off: '#222222' }; }
 }
 
@@ -418,15 +359,16 @@ function updateFreqDisplay() {
   d.style.color = currentFreq >= 20 ? '#ff3344' : currentFreq >= 10 ? '#ffaa00' : 'white';
 }
 
-// === RENDER LOOP ===
 function drawFlicker(state) {
   if (pattern === 'fullscreen') {
     canvas.style.display = 'none';
-    document.getElementById('stimulus').style.backgroundColor = state ? colors.on : colors.off;
+    stimulus.style.display = '';
+    stimulus.style.backgroundColor = state ? colors.on : colors.off;
     return;
   }
+
   canvas.style.display = 'block';
-  document.getElementById('stimulus').style.display = 'none';
+  stimulus.style.display = 'none';
 
   const w = canvas.width, h = canvas.height;
   const c1 = state ? colors.on : colors.off;
@@ -464,20 +406,16 @@ function drawFlicker(state) {
 
 function loop(ts) {
   if (!running) return;
-
   if (!startTime) startTime = ts;
   const elapsed = (ts - startTime) / 1000;
 
-  // Sweep mode
-  let freq = currentFreq;
   if (sweeping) {
     const t = elapsed % sweepDur;
-    freq = sweepFrom + (sweepTo - sweepFrom) * (t / sweepDur);
+    const freq = sweepFrom + (sweepTo - sweepFrom) * (t / sweepDur);
     setFreq(freq.toFixed(1));
   }
 
-  // Flicker timing
-  const period = 1 / freq;
+  const period = 1 / currentFreq;
   const onTime = period * dutyCycle;
   const cycleTime = elapsed % period;
   flickerState = cycleTime < onTime;
@@ -486,13 +424,8 @@ function loop(ts) {
   frameId = requestAnimationFrame(loop);
 }
 
-// === START/STOP ===
 function toggleRun() {
-  if (running) {
-    stopRun();
-  } else {
-    startRun();
-  }
+  running ? stopRun() : startRun();
 }
 
 function startRun() {
@@ -500,8 +433,8 @@ function startRun() {
   startTime = null;
   flickerState = false;
 
-  document.getElementById('stimulus').classList.add('active');
-  if (pattern !== 'fullscreen') document.getElementById('patternCanvas').classList.add('active');
+  stimulus.classList.add('active');
+  if (pattern !== 'fullscreen') canvas.classList.add('active');
 
   document.getElementById('start-btn').textContent = '■ STOP';
   document.getElementById('start-btn').classList.add('running');
@@ -510,25 +443,23 @@ function startRun() {
 
   sessionStart = Date.now();
   timerInterval = setInterval(updateTimer, 500);
-
   frameId = requestAnimationFrame(loop);
 }
 
 function stopRun() {
   running = false;
   sweeping = false;
-
   if (frameId) cancelAnimationFrame(frameId);
 
-  document.getElementById('stimulus').classList.remove('active');
-  document.getElementById('patternCanvas').classList.remove('active');
-  document.getElementById('stimulus').style.backgroundColor = 'black';
+  stimulus.classList.remove('active');
+  canvas.classList.remove('active');
+  stimulus.style.backgroundColor = 'black';
+  canvas.style.display = 'none';
 
   document.getElementById('start-btn').textContent = '▶ START';
   document.getElementById('start-btn').classList.remove('running');
   document.getElementById('status-dot').className = '';
   document.getElementById('status-text').textContent = 'STANDBY';
-
   document.getElementById('sweep-btn').classList.remove('active');
   document.getElementById('sweep-btn').textContent = '⟳ SWEEP MODE';
 
@@ -557,13 +488,11 @@ function togglePanel() {
   document.getElementById('panel-toggle').textContent = panelVisible ? '▼ CONTROLS' : '▲ CONTROLS';
 }
 
-// ESC to stop
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') stopRun();
   if (e.key === ' ') { e.preventDefault(); toggleRun(); }
 });
 
-// Init
 setFreq(1);
 setColors('bw');
 setPattern('fullscreen');
